@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparativa de iPhones</title>
+    <style>
+        /* Default (Light) Theme */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f4f4f4;
+            --text-primary: #333;
+            --accent-color: #007aff;
+            --border-color: #e0e0e0;
+            --shadow-light: rgba(0,0,0,0.1);
+        }
+
+        /* Gray Dark Theme */
+        .theme-gray-dark {
+            --bg-primary: #1f1f1f;
+            --bg-secondary: #2c2c2c;
+            --text-primary: #e0e0e0;
+            --accent-color: #4a90e2;
+            --border-color: #404040;
+            --shadow-light: rgba(255,255,255,0.1);
+        }
+
+        /* Blue Theme */
+        .theme-blue {
+            --bg-primary: #e6f2ff;
+            --bg-secondary: #b3d9ff;
+            --text-primary: #002855;
+            --accent-color: #0056b3;
+            --border-color: #6699cc;
+            --shadow-light: rgba(0,86,179,0.1);
+        }
+
+        /* Yellow Theme */
+        .theme-yellow {
+            --bg-primary: #fffde7;
+            --bg-secondary: #fff9c4;
+            --text-primary: #4a4a4a;
+            --accent-color: #ffc107;
+            --border-color: #ffd54f;
+            --shadow-light: rgba(255,193,7,0.1);
+        }
+
+        /* Red Theme */
+        .theme-red {
+            --bg-primary: #ffebee;
+            --bg-secondary: #ffcdd2;
+            --text-primary: #5a0000;
+            --accent-color: #d32f2f;
+            --border-color: #ef5350;
+            --shadow-light: rgba(211,47,47,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-primary);
+            box-shadow: 0 4px 6px var(--shadow-light);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: var(--bg-secondary);
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        #theme-selector {
+            display: flex;
+            gap: 10px;
+        }
+
+        .theme-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 14px;
+        }
+
+        .theme-btn:hover {
+            opacity: 0.8;
+        }
+
+        #filterInput {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        #filterInput:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        #iphoneTable {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--bg-primary);
+        }
+
+        #iphoneTable thead {
+            background-color: var(--bg-secondary);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        #iphoneTable th, #iphoneTable td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s ease;
+        }
+
+        #iphoneTable th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+            color: var(--accent-color);
+            cursor: pointer;
+        }
+
+        #iphoneTable tr:hover {
+            background-color: rgba(0,122,255,0.05);
+        }
+
+        #iphoneTable th:hover {
+            background-color: rgba(0,122,255,0.1);
+        }
+
+        #noMatch {
+            text-align: center;
+            color: var(--accent-color);
+            padding: 20px;
+            display: none;
+        }
+
+        @media screen and (max-width: 768px) {
+            #iphoneTable {
+                font-size: 14px;
+            }
+            #iphoneTable th, #iphoneTable td {
+                padding: 10px;
+            }
+            #theme-selector {
+                flex-direction: column;
+                width: 100%;
+            }
+            .theme-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Comparativa de iPhones</h1>
+            <div id="theme-selector">
+                <button class="theme-btn" data-theme="default">Tema Claro</button>
+                <button class="theme-btn" data-theme="gray-dark">Gris Oscuro</button>
+                <button class="theme-btn" data-theme="blue">Azul</button>
+                <button class="theme-btn" data-theme="yellow">Amarillo</button>
+                <button class="theme-btn" data-theme="red">Rojo</button>
+            </div>
+        </div>
+
+        <div class="content" style="padding: 20px;">
+            <input type="text" id="filterInput" placeholder="🔍 Buscar modelo, características...">
+            
+            <div style="overflow-x: auto;">
+                <table id="iphoneTable">
+                    <thead>
+                        <tr>
+                            <th data-sort="modelo">Modelo</th>
+                            <th data-sort="pantalla">Pantalla</th>
+                            <th data-sort="resolucion">Resolución</th>
+                            <th data-sort="procesador">Procesador</th>
+                            <th data-sort="ram">RAM</th>
+                            <th data-sort="almacenamiento">Almacenamiento</th>
+                            <th data-sort="camara-trasera">Cámara Trasera</th>
+                            <th data-sort="camara-frontal">Cámara Frontal</th>
+                            <th data-sort="bateria">Batería</th>
+                            <th data-sort="peso">Peso</th>
+                            <th data-sort="extras">Extras</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>iPhone 14</td><td>6.1" OLED</td><td>2532x1170</td><td>A15 Bionic</td><td>6GB</td><td>128GB, 256GB</td><td>12+12 MP</td><td>12 MP</td><td>20h</td><td>172g</td><td>5G, MagSafe</td></tr>
+                        <tr><td>iPhone 14 Plus</td><td>6.7" OLED</td><td>2778x1284</td><td>A15 Bionic</td><td>6GB</td><td>128GB, 256GB</td><td>12+12 MP</td><td>12 MP</td><td>26h</td><td>203g</td><td>5G, MagSafe</td></tr>
+                        <tr><td>iPhone 14 Pro</td><td>6.1" OLED</td><td>2556x1179</td><td>A16 Bionic</td><td>6GB</td><td>128GB, 256GB, 1TB</td><td>48+12+12 MP</td><td>12 MP</td><td>23h</td><td>206g</td><td>Dynamic Island</td></tr>
+                        <tr><td>iPhone 14 Pro Max</td><td>6.7" OLED</td><td>2796x1290</td><td>A16 Bionic</td><td>6GB</td><td>128GB, 256GB, 1TB</td><td>48+12+12 MP</td><td>12 MP</td><td>29h</td><td>240g</td><td>Dynamic Island</td></tr>
+                        <tr><td>iPhone 15</td><td>6.1" OLED</td><td>2556x1179</td><td>A16 Bionic</td><td>6GB</td><td>128GB, 256GB</td><td>48+12 MP</td><td>12 MP</td><td>20h</td><td>171g</td><td>USB-C</td></tr>
+                        <tr><td>iPhone 15 Plus</td><td>6.7" OLED</td><td>2796x1290</td><td>A16 Bionic</td><td>6GB</td><td>128GB, 256GB</td><td>48+12 MP</td><td>12 MP</td><td>26h</td><td>201g</td><td>USB-C</td></tr>
+                        <tr><td>iPhone 15 Pro</td><td>6.1" OLED</td><td>2556x1179</td><td>A17 Pro</td><td>8GB</td><td>256GB, 512GB, 1TB</td><td>48+12+12 MP</td><td>12 MP</td><td>23h</td><td>187g</td><td>Titanio</td></tr>
+                        <tr><td>iPhone 15 Pro Max</td><td>6.7" OLED</td><td>2796x1290</td><td>A17 Pro</td><td>8GB</td><td>256GB, 512GB, 1TB</td><td>48+12+12 MP</td><td>12 MP</td><td>29h</td><td>221g</td><td>Titanio</td></tr>
+                                            
+                        <!-- Samsung Galaxy S models -->
+                        <tr><td>Samsung</td><td>Galaxy S20</td><td>6.2" Dynamic AMOLED 120Hz</td><td>Snapdragon 865</td><td>8GB</td><td>128GB</td><td>12+64+12 MP</td><td>10MP</td><td>4000mAh</td><td>163g</td><td>5G, IP68, carga rápida 25W</td></tr>
+                        <tr><td>Samsung</td><td>Galaxy S20+</td><td>6.7" Dynamic AMOLED 120Hz</td><td>Snapdragon 865</td><td>8GB</td><td>128GB</td><td>12+64+12+DepthVision MP</td><td>10MP</td><td>4500mAh</td><td>198g</td><td>5G, IP68, carga rápida 25W</td></tr>
+                        <tr><td>Samsung</td><td>Galaxy S20 Ultra</td><td>6.9" Dynamic AMOLED 120Hz</td><td>Snapdragon 865</td><td>12GB</td><td>128GB</td><td>108+12+12+DepthVision MP</td><td>40MP</td><td>5000mAh</td><td>222g</td><td>5G, IP68, carga rápida 45W</td></tr>
+                        <tr><td>Samsung</td><td>Galaxy S21</td><td>6.2" Dynamic AMOLED 120Hz</td><td>Snapdragon 888</td><td>8GB</td><td>128GB</td><td>12+64+12 MP</td><td>10MP</td><td>4000mAh</td><td>171g</td><td>5G, IP68, carga rápida 25W</td></tr>
+                        <tr><td>Samsung</td><td>Galaxy S21+</td><td>6.7" Dynamic AMOLED 120Hz</td><td>Snapdragon 888</td><td>8GB</td><td>128GB</td><td>12+64+12 MP</td><td>10MP</td><td>4800mAh</td><td>200g</td><td>5G, IP68, carga rápida 25W</td></tr>
+                        <tr><td>Samsung</td><td>Galaxy S21 Ultra</td><td>6.8" Dynamic AMOLED 120Hz</td><td>Snapdragon 888</td><td>12GB</td><td>128GB</td><td>108+12+12+DepthVision MP</td><td>40MP</td><td>5000mAh</td><td>228g</td><td>5G, IP68, carga rápida 45W</td></tr>
+                        <tr><td>Samsung</td><td>Galaxy S22</td><td>6.1" Dynamic AMOLED 120Hz</td><td>Snapdragon 8 Gen 1</td><td>8GB</td><td>128GB</td><td>50+12+10 MP</td><td>10MP</td><td>3700mAh</td><td>167g</td><td>5G, IP68, carga rápida 25W</td></tr>
+                        <tr><td>Samsung</td><td>Galaxy S22+</td><td>6.6" Dynamic AMOLED 120Hz</td><td>Snapdragon 8 Gen 1</td><td>8GB</td><td>128GB</td><td>50+12+10 MP</td><td>10MP</td><td>4500mAh</td><td>199g</td><td>5G, IP68, carga rápida 25W</td></tr>
+                        <tr><td>Samsung</td><td>Galaxy S22 Ultra</td><td>6.8" Dynamic AMOLED 120Hz</td><td>Snapdragon 8 Gen 1</td><td>12GB</td><td>128GB</td><td>108+12+10+12 MP</td><td>40MP</td><td>5000mAh</td><td>228g</td><td>5G, IP68, carga rápida 45W</td></tr>
+                        <tr><td>Samsung</td><td>Galaxy S23</td><td>6.1" Dynamic AMOLED 120Hz</td><td>Snapdragon 8 Gen 2</td><td>8GB</td><td>128GB</td><td>50+12+12 MP</td><td>12MP</td><td>3900mAh</td><td>167g</td><td>5G, IP68, carga rápida 25W</td></tr>
+                        <tr><td>Samsung</td><td>Galaxy S23+</td><td>6.6" Dynamic AMOLED 120Hz</td><td>Snapdragon 8 Gen 2</td><td>8GB</td><td>128GB</td><td>50+12+12 MP</td><td>12MP</td><td>4700mAh</td><td>199g</td><td>5G, IP68, carga rápida 25W</td></tr>
+                        <tr><td>Samsung</td><td>Galaxy S23 Ultra</td><td>6.8" Dynamic AMOLED 120Hz</td><td>Snapdragon 8 Gen 2</td><td>12GB</td><td>128GB</td><td>200+12+10+12 MP</td><td>12MP</td><td>5000mAh</td><td>228g</td><td>5G, IP68, carga rápida 45W</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <p id="noMatch">No se encontraron dispositivos que coincidan con la búsqueda.</p>
+        </div>
+    </div>
+
+    <script>
+        // Theme Switching
+        const themeButtons = document.querySelectorAll('.theme-btn');
+        const htmlElement = document.documentElement;
+
+        themeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const theme = button.getAttribute('data-theme');
+                
+                // Remove all theme classes
+                htmlElement.classList.remove('theme-gray-dark', 'theme-blue', 'theme-yellow', 'theme-red');
+                
+                // Add selected theme class (if not default)
+                if (theme !== 'default') {
+                    htmlElement.classList.add(`theme-${theme}`);
+                }
+            });
+        });
+
+        // Table Sorting
+        const table = document.getElementById('iphoneTable');
+        const headers = table.querySelectorAll('th');
+        const tbody = table.querySelector('tbody');
+
+        headers.forEach(header => {
+            header.addEventListener('click', () => {
+                const sortKey = header.getAttribute('data-sort');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+                
+                const sortedRows = rows.sort((a, b) => {
+                    const aValue = a.querySelector(`td:nth-child(${Array.from(headers).indexOf(header) + 1})`).textContent;
+                    const bValue = b.querySelector(`td:nth-child(${Array.from(headers).indexOf(header) + 1})`).textContent;
+                    
+                    return aValue.localeCompare(bValue);
+                });
+
+                // Clear current rows
+                tbody.innerHTML = '';
+
+                // Add sorted rows
+                sortedRows.forEach(row => tbody.appendChild(row));
+            });
+        });
+
+        // Filtering
+        const filterInput = document.getElementById('filterInput');
+        const noMatchMessage = document.getElementById('noMatch');
+
+        filterInput.addEventListener('input', () => {
+            const filter = filterInput.value.toLowerCase();
+            const rows = tbody.querySelectorAll('tr');
+            let matchFound = false;
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+                
+                if (rowText.includes(filter)) {
+                    row.style.display = '';
+                    matchFound = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Show/hide no match message
+            noMatchMessage.style.display = matchFound ? 'none' : 'block';
+        });
+    </script>
+</body>
+</html>
